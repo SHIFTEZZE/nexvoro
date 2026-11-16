@@ -1,0 +1,41 @@
+﻿import Link from "next/link";
+import { Container } from "@/components/layout/Container";
+import { CATEGORIES } from "@/lib/constants";
+
+export function CategoryGrid() {
+  return (
+    <section className="py-14">
+      <Container>
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-navy">
+              Shop by category
+            </h2>
+            <p className="mt-1 text-sm text-slate-600">
+              Six curated categories, expanding as partner merchants come online.
+            </p>
+          </div>
+          <Link href="/products" className="text-sm font-semibold text-brand hover:text-brand-dark">
+            View all
+          </Link>
+        </div>
+
+        <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {CATEGORIES.map((c) => (
+            <li key={c.id}>
+              <Link
+                href={`/products?category=${c.id}`}
+                className="group flex flex-col items-start rounded-2xl bg-white p-4 ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:ring-brand"
+              >
+                <span className="text-sm font-semibold text-navy group-hover:text-brand">
+                  {c.label}
+                </span>
+                <span className="mt-1 text-xs text-slate-500">{c.description}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </section>
+  );
+}

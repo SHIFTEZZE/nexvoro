@@ -1,0 +1,69 @@
+﻿import Link from "next/link";
+import { Container } from "@/components/layout/Container";
+import { BRAND } from "@/lib/constants";
+
+export function Hero() {
+  return (
+    <section className="border-b border-slate-200/60 bg-gradient-to-b from-white to-surface">
+      <Container>
+        <div className="grid gap-10 py-14 md:py-20 md:grid-cols-2 md:items-center">
+          <div>
+            <p className="inline-flex items-center rounded-full bg-white px-3 py-1 text-xs font-medium text-brand ring-1 ring-blue-100">
+              International product discovery
+            </p>
+            <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-navy sm:text-5xl">
+              {BRAND.slogan}
+            </h1>
+            <p className="mt-4 max-w-lg text-base text-slate-600">
+              Discover and compare products across categories. Explore demonstration products
+              now. Real merchant listings activate once authorized partners are connected.
+            </p>
+
+            <form
+              action="/products"
+              method="GET"
+              className="mt-6 flex items-center gap-2 rounded-2xl bg-white p-1.5 ring-1 ring-slate-200 focus-within:ring-2 focus-within:ring-brand"
+            >
+              <label htmlFor="q" className="sr-only">
+                Search products
+              </label>
+              <input
+                id="q"
+                name="q"
+                type="search"
+                placeholder="Search products, categories, or tags..."
+                className="w-full rounded-xl bg-transparent px-3 py-2.5 text-sm text-navy placeholder:text-slate-400 focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark"
+              >
+                Search
+              </button>
+            </form>
+
+            <div className="mt-4 flex flex-wrap gap-2 text-sm">
+              <Link
+                href="/products"
+                className="rounded-xl bg-white px-3 py-2 text-sm font-medium text-navy ring-1 ring-slate-200 hover:bg-slate-50"
+              >
+                Browse all
+              </Link>
+              <Link
+                href="/products?sort=newest"
+                className="rounded-xl bg-white px-3 py-2 text-sm font-medium text-navy ring-1 ring-slate-200 hover:bg-slate-50"
+              >
+                Newest first
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative hidden md:block">
+            <div className="aspect-square w-full rounded-3xl bg-gradient-to-tr from-brand to-brand-light opacity-90" />
+            <div className="absolute inset-6 rounded-3xl border border-white/30" />
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
+}

@@ -1,0 +1,49 @@
+﻿import Link from "next/link";
+import { Container } from "@/components/layout/Container";
+import { BRAND, CATEGORIES } from "@/lib/constants";
+
+export function Header() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/85 backdrop-blur">
+      <Container>
+        <div className="flex h-16 items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-2">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-white text-sm font-bold">
+              N
+            </span>
+            <span className="text-lg font-bold tracking-tight text-navy">
+              {BRAND.name}
+            </span>
+          </Link>
+
+          <nav aria-label="Primary" className="hidden md:flex items-center gap-6">
+            <Link
+              href="/products"
+              className="text-sm font-medium text-navy hover:text-brand"
+            >
+              All products
+            </Link>
+            {CATEGORIES.slice(0, 4).map((c) => (
+              <Link
+                key={c.id}
+                href={`/products?category=${c.id}`}
+                className="text-sm font-medium text-slate-600 hover:text-brand"
+              >
+                {c.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/products"
+              className="hidden sm:inline-flex items-center rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark"
+            >
+              Browse catalog
+            </Link>
+          </div>
+        </div>
+      </Container>
+    </header>
+  );
+}

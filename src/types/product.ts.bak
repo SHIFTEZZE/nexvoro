@@ -1,0 +1,54 @@
+﻿export type CategoryId =
+  | "audio"
+  | "wearables"
+  | "home"
+  | "kitchen"
+  | "fitness"
+  | "travel";
+
+export type MerchantId = "demo-merchant-a" | "demo-merchant-b";
+
+export interface Category {
+  id: CategoryId;
+  label: string;
+  description: string;
+}
+
+export interface Merchant {
+  id: MerchantId;
+  name: string;
+  /** Allowlisted hostname (no protocol). Used by affiliate redirect guard. */
+  allowlistedHost: string;
+  /** Env keys for base URL / param / value; resolved at redirect time. */
+  env: {
+    baseUrlKey: string;
+    paramKey: string;
+    valueKey: string;
+  };
+}
+
+export interface Product {
+  id: string;
+  slug: string;
+  name: string;
+  shortDescription: string;
+  description: string;
+  categoryId: CategoryId;
+  merchantId: MerchantId;
+  tags: string[];
+  imageUrl: string;
+  specs: { label: string; value: string }[];
+  featured: boolean;
+  createdAt: string; // ISO
+  /** Internal path to affiliate redirect. External URL is never rendered. */
+  affiliatePath: string;
+  /** Demonstration marker: true means illustrative, not a real listing. */
+  isDemo: true;
+}
+
+export interface ProductFilters {
+  q?: string;
+  category?: CategoryId;
+  merchant?: MerchantId;
+  sort?: "featured" | "name_asc" | "newest";
+}

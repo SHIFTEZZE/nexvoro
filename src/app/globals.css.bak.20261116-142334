@@ -1,0 +1,43 @@
+﻿@import "tailwindcss";
+
+@theme {
+  --color-brand: #2563EB;
+  --color-brand-dark: #1D4ED8;
+  --color-brand-light: #3B82F6;
+  --color-navy: #0F172A;
+  --color-surface: #EFF6FF;
+  --color-accent: #F43F5E;
+
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.125rem;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background-color: var(--color-surface);
+  color: var(--color-navy);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* --- Batch H1 additions: hero + editorial accents --- */
+.hero-ambient {
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(37, 99, 235, 0.06), transparent 60%),
+    radial-gradient(60% 40% at 50% 100%, rgba(15, 23, 42, 0.04), transparent 60%);
+}

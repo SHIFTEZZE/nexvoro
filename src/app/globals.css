@@ -1,26 +1,84 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
+
+@theme {
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.125rem;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background-color: var(--color-ivory);
+  color: var(--color-obsidian);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* --- Batch H1 additions: hero + editorial accents --- */
+.hero-ambient {
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(37, 99, 235, 0.06), transparent 60%),
+    radial-gradient(60% 40% at 50% 100%, rgba(15, 23, 42, 0.04), transparent 60%);
+}
+
+/* ============================================================
+   L0-OBSIDIAN-CHAMPAGNE-TOKENS
+   Batch L0 - design system migration.
+   These tokens are ADDITIVE. Legacy tokens (--color-brand,
+   --color-navy, --color-surface, --color-accent) remain in place
+   and are used by all existing components until later batches
+   migrate them. Do not remove the legacy tokens until L5.
+   ============================================================ */
+
+@theme inline {
+  /* Official palette - never changes */
+  --color-obsidian: #111318;
+  --color-champagne: #C6A978;
+  --color-ivory: #F8F6F1;
+  --color-stone: #E8E4DC;
+
+  /* Supporting values - derived for accessibility/state */
+  --color-ink-secondary: #52545A;
+  --color-champagne-dark: #755B32;
+  --color-obsidian-hover: #292C33;
+  --color-dark-surface: #1B1E24;
+  --color-focus-ring: #755B32;
+
+  /* Semantic aliases (namespaced to avoid collision with legacy --color-accent) */
+  --color-surface-page: var(--color-ivory);
+  --color-surface-raised: #FFFFFF;
+  --color-ink: var(--color-obsidian);
+  --color-ink-muted: var(--color-ink-secondary);
+  --color-action: var(--color-obsidian);
+  --color-action-fg: #FFFFFF;
+  --color-action-hover: var(--color-obsidian-hover);
+  --color-gold: var(--color-champagne);
+  --color-gold-strong: var(--color-champagne-dark);
+  --color-line: var(--color-stone);
+  --color-focus: var(--color-focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

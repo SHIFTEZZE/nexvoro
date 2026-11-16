@@ -1,0 +1,43 @@
+﻿import Link from "next/link";
+import { Container } from "@/components/layout/Container";
+import { ProductCard } from "@/components/products/ProductCard";
+import { getFeaturedProducts } from "@/lib/products";
+
+export function FeaturedProducts() {
+  const products = getFeaturedProducts(8);
+
+  return (
+    <section className="bg-white py-14">
+      <Container>
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-navy">
+              Featured products
+            </h2>
+            <p className="mt-1 text-sm text-slate-600">
+              Curated demonstration entries. Clearly labeled examples.
+            </p>
+          </div>
+          <Link
+            href="/products?sort=featured"
+            className="text-sm font-semibold text-brand hover:text-brand-dark"
+          >
+            See all
+          </Link>
+        </div>
+
+        {products.length === 0 ? (
+          <p className="mt-8 text-sm text-slate-500">No featured products yet.</p>
+        ) : (
+          <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {products.map((p) => (
+              <li key={p.id}>
+                <ProductCard product={p} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </Container>
+    </section>
+  );
+}

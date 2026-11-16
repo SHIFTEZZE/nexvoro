@@ -1,0 +1,87 @@
+﻿import Link from "next/link";
+import { Container } from "@/components/layout/Container";
+import { BRAND, CATEGORIES } from "@/lib/constants";
+
+export function Header() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur">
+      <Container>
+        <div className="flex h-16 items-center justify-between gap-4">
+          {/* Brand */}
+          <Link href="/" className="flex items-center gap-2.5" aria-label="NEXVORO home">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-white text-base font-extrabold shadow-sm">
+              N
+            </span>
+            <span className="text-base font-extrabold tracking-[0.02em] text-navy sm:text-lg">
+              {BRAND.name}
+            </span>
+          </Link>
+
+          {/* Center nav */}
+          <nav aria-label="Primary" className="hidden items-center gap-7 md:flex">
+            <Link
+              href="/"
+              className="text-sm font-medium text-navy hover:text-brand"
+            >
+              Home
+            </Link>
+            <Link
+              href="/products"
+              className="text-sm font-medium text-slate-600 hover:text-brand"
+            >
+              Products
+            </Link>
+            <div className="group relative">
+              <button
+                type="button"
+                className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 rounded-md px-1 py-1"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Categories
+                <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+                  <path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              <div
+                role="menu"
+                className="invisible absolute left-1/2 top-full z-50 mt-2 w-56 -translate-x-1/2 rounded-2xl bg-white p-2 opacity-0 shadow-lg ring-1 ring-slate-200 transition group-hover:visible group-hover:opacity-100 focus-within:visible focus-within:opacity-100"
+              >
+                {CATEGORIES.map((c) => (
+                  <Link
+                    key={c.id}
+                    href={`/products?category=${c.id}`}
+                    role="menuitem"
+                    className="block rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-brand"
+                  >
+                    {c.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </nav>
+
+          {/* Right: search + CTA */}
+          <div className="flex items-center gap-2">
+            <Link
+              href="/products"
+              aria-label="Search products"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-navy ring-1 ring-slate-200 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+            >
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.6"/>
+                <path d="M14 14l4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+              </svg>
+            </Link>
+            <Link
+              href="/products"
+              className="hidden rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:inline-flex"
+            >
+              Browse catalog
+            </Link>
+          </div>
+        </div>
+      </Container>
+    </header>
+  );
+}

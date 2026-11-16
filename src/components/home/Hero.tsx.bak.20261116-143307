@@ -1,0 +1,94 @@
+﻿import Link from "next/link";
+import Image from "next/image";
+import { Container } from "@/components/layout/Container";
+
+export function Hero() {
+  return (
+    <section className="relative overflow-hidden bg-white">
+      {/* Subtle ambient background */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(80% 60% at 50% 0%, rgba(37,99,235,0.06), transparent 60%), radial-gradient(60% 40% at 50% 100%, rgba(15,23,42,0.04), transparent 60%)",
+        }}
+      />
+
+      <Container>
+        <div className="relative py-12 sm:py-16 lg:py-20">
+          {/* Desktop: 3-column editorial grid; Mobile: single column stack */}
+          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.35fr_1fr] lg:gap-8">
+            {/* Left column */}
+            <div className="order-2 text-center lg:order-1 lg:text-left">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand">
+                Discover the extraordinary
+              </p>
+              <h1 className="mt-4 text-4xl font-extrabold leading-[1.05] tracking-tight text-navy sm:text-5xl lg:text-[3.25rem]">
+                Sound meets style.
+              </h1>
+              <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-slate-600 lg:mx-0">
+                Explore audio, smart technology, and everyday essentials selected
+                for curious minds.
+              </p>
+              <div className="mt-7 flex justify-center lg:justify-start">
+                <Link
+                  href="/products?category=audio"
+                  className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                >
+                  Explore Audio
+                </Link>
+              </div>
+            </div>
+
+            {/* Center: oversized product illustration */}
+            <div className="order-1 lg:order-2">
+              <div className="relative mx-auto aspect-square w-full max-w-[560px]">
+                <Image
+                  src="/hero-headphones.svg"
+                  alt="Illustration of over-ear headphones"
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 560px, 90vw"
+                  className="object-contain"
+                />
+              </div>
+            </div>
+
+            {/* Right column */}
+            <div className="order-3 text-center lg:text-left">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                NEXVORO
+              </p>
+              <h2 className="mt-4 text-3xl font-extrabold leading-[1.1] tracking-tight text-navy sm:text-4xl">
+                Discover More.
+                <br />
+                Spend Less.
+              </h2>
+              <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-slate-600 lg:mx-0">
+                A better way to discover products across the world.
+              </p>
+              <div className="mt-7 flex justify-center lg:justify-start">
+                <Link
+                  href="/products"
+                  className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-navy ring-1 ring-slate-200 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                >
+                  Explore the catalog
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Demonstration notice - clearly visible, not a disclaimer footer */}
+          <div className="mx-auto mt-10 max-w-3xl rounded-2xl border border-blue-100 bg-blue-50/60 px-4 py-3 text-center text-xs leading-relaxed text-slate-700 sm:mt-12 sm:text-sm">
+            <span className="font-semibold text-brand">Note:</span>{" "}
+            Products shown are demonstration entries, not real merchant
+            listings. NEXVORO does not sell products, and purchasing is not
+            available through NEXVORO. Real merchant links activate once
+            authorized partners are configured.
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
+}

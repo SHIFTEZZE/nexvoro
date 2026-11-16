@@ -1,0 +1,111 @@
+﻿import type { Metadata } from "next";
+import Link from "next/link";
+import { Container } from "@/components/layout/Container";
+import { ProductCard } from "@/components/products/ProductCard";
+import { ProductFilters } from "@/components/products/ProductFilters";
+import { SearchBar } from "@/components/products/SearchBar";
+import { EmptyState } from "@/components/products/EmptyState";
+import { Disclosure } from "@/components/ui/Disclosure";
+import { applyFilters, parseFilters } from "@/lib/filters";
+import { getAllProducts } from "@/lib/products";
+
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  const filters = parseFilters(params);
+  const pieces: string[] = ["Products"];
+  if (filters.q) pieces.push(`matching "${filters.q}"`);
+  if (filters.category) pieces.push(`in ${filters.category}`);
+  if (filters.merchant) pieces.push(`from ${filters.merchant}`);
+
+  return {
+    title: pieces.join(" "),
+    description:
+      "Browse the NEXVORO demonstration catalog of products across audio, wearables, home, kitchen, fitness, and travel.",
+    alternates: { canonical: "/products" },
+  };
+}
+
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const params = await searchParams;
+  const filters = parseFilters(params);
+  const all = getAllProducts();
+  const results = applyFilters(all, filters);
+
+  const hasFilters = Boolean(
+    filters.q || filters.category || filters.merchant,
+  );
+
+  return (
+    <Container>
+      <div className="space-y-6 py-10 sm:py-14">
+        <header className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-wider text-brand">
+            Demonstration catalog
+          </p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
+            Browse products
+          </h1>
+          <p className="max-w-2xl text-sm text-slate-600">
+            All entries are illustrative examples, not real merchant listings.
+            Purchase actions are disabled until authorized partner links are
+            configured.
+          </p>
+        </header>
+
+        <SearchBar
+          defaultQuery={filters.q}
+          category={filters.category}
+          merchant={filters.merchant}
+          sort={filters.sort !== "featured" ? filters.sort : undefined}
+        />
+
+        <ProductFilters
+          current={{
+            q: filters.q,
+            category: filters.category,
+            merchant: filters.merchant,
+            sort: filters.sort,
+          }}
+        />
+
+        <div className="flex items-center justify-between text-sm text-slate-600">
+          <p aria-live="polite">
+            <strong className="font-semibold text-navy">{results.length}</strong>{" "}
+            {results.length === 1 ? "product" : "products"}
+            {hasFilters ? " matching your filters" : ""}
+          </p>
+          <Link
+            href="/"
+            className="hidden text-xs font-medium text-brand hover:text-brand-dark sm:inline"
+          >
+            Back to home
+          </Link>
+        </div>
+
+        {results.length === 0 ? (
+          <EmptyState query={filters.q} hasFilters={hasFilters} />
+        ) : (
+          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {results.map((p) => (
+              <li key={p.id}>
+                <ProductCard product={p} />
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <Disclosure />
+      </div>
+    </Container>
+  );
+}

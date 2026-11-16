@@ -1,0 +1,36 @@
+﻿import Link from "next/link";
+
+export function EmptyState({
+  query,
+  hasFilters,
+}: {
+  query?: string;
+  hasFilters: boolean;
+}) {
+  return (
+    <div className="rounded-2xl bg-white p-10 text-center ring-1 ring-slate-200">
+      <h2 className="text-lg font-semibold text-navy">No products found</h2>
+      <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">
+        {query
+          ? `We could not find any products matching "${query}".`
+          : hasFilters
+            ? "No products match the selected filters."
+            : "The catalog is empty right now."}
+      </p>
+      <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+        <Link
+          href="/products"
+          className="inline-flex items-center rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark"
+        >
+          View all products
+        </Link>
+        <Link
+          href="/"
+          className="inline-flex items-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-navy ring-1 ring-slate-200 hover:bg-slate-50"
+        >
+          Back home
+        </Link>
+      </div>
+    </div>
+  );
+}

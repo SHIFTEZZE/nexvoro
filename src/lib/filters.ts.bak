@@ -1,0 +1,93 @@
+﻿import type { CategoryId, MerchantId, Product, ProductFilters } from "@/types/product";
+import { isValidCategory, isValidMerchant } from "@/lib/products";
+
+const SORTS = ["featured", "name_asc", "newest"] as const;
+export type SortKey = (typeof SORTS)[number];
+
+export function isSortKey(value: string): value is SortKey {
+  return (SORTS as readonly string[]).includes(value);
+}
+
+type RawParams = Record<string, string | string[] | undefined>;
+
+/**
+ * Parse and strictly validate URL search parameters.
+ * Unknown categories/merchants are silently dropped (treated as "no filter").
+ * Unknown sort values default to "featured".
+ */
+export function parseFilters(params: RawParams): ProductFilters {
+  const q =
+    typeof params.q === "string" && params.q.trim().length > 0
+      ? params.q.trim()
+      : undefined;
+
+  const category =
+    typeof params.category === "string" && isValidCategory(params.category)
+      ? (params.category as CategoryId)
+      : undefined;
+
+  const merchant =
+    typeof params.merchant === "string" && isValidMerchant(params.merchant)
+      ? (params.merchant as MerchantId)
+      : undefined;
+
+  const sort =
+    typeof params.sort === "string" && isSortKey(params.sort)
+      ? params.sort
+      : "featured";
+
+  return { q, category, merchant, sort };
+}
+
+/**
+ * Apply already-validated filters to a product list and return a new sorted array.
+ * Never mutates input.
+ */
+export function applyFilters(
+  products: readonly Product[],
+  filters: ProductFilters,
+): Product[] {
+  const q = filters.q?.toLowerCase();
+
+  const filtered = products.filter((p) => {
+    if (filters.category && p.categoryId !== filters.category) return false;
+    if (filters.merchant && p.merchantId !== filters.merchant) return false;
+    if (q) {
+      const haystack =
+        `${p.name} ${p.shortDescription} ${p.tags.join(" ")}`.toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const sort = filters.sort ?? "featured";
+  const sorted = [...filtered];
+
+  if (sort === "name_asc") {
+    sorted.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sort === "newest") {
+    sorted.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  } else {
+    // featured: featured first, then newest
+    sorted.sort((a, b) => {
+      const f = Number(b.featured) - Number(a.featured);
+      if (f !== 0) return f;
+      return b.createdAt.localeCompare(a.createdAt);
+    });
+  }
+
+  return sorted;
+}
+
+/**
+ * Build a /products URL from filters. Omits empty/default values so URLs stay clean.
+ */
+export function buildProductsUrl(filters: ProductFilters): string {
+  const params = new URLSearchParams();
+  if (filters.q) params.set("q", filters.q);
+  if (filters.category) params.set("category", filters.category);
+  if (filters.merchant) params.set("merchant", filters.merchant);
+  if (filters.sort && filters.sort !== "featured") params.set("sort", filters.sort);
+  const qs = params.toString();
+  return qs ? `/products?${qs}` : "/products";
+}

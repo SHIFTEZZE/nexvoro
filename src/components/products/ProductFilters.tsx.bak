@@ -1,0 +1,167 @@
+﻿"use client";
+
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { CATEGORIES, MERCHANTS, SORT_OPTIONS } from "@/lib/constants";
+
+type Current = {
+  q?: string;
+  category?: string;
+  merchant?: string;
+  sort?: string;
+};
+
+function buildUrl(next: Current): string {
+  const params = new URLSearchParams();
+  if (next.q) params.set("q", next.q);
+  if (next.category) params.set("category", next.category);
+  if (next.merchant) params.set("merchant", next.merchant);
+  if (next.sort && next.sort !== "featured") params.set("sort", next.sort);
+  const qs = params.toString();
+  return qs ? `/products?${qs}` : "/products";
+}
+
+export function ProductFilters({ current }: { current: Current }) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const [category, setCategory] = useState(current.category ?? "");
+  const [merchant, setMerchant] = useState(current.merchant ?? "");
+  const [sort, setSort] = useState(current.sort ?? "featured");
+
+  function update(next: Partial<Current>) {
+    const merged: Current = {
+      q: current.q,
+      category,
+      merchant,
+      sort,
+      ...next,
+    };
+    startTransition(() => {
+      router.push(buildUrl(merged));
+    });
+  }
+
+  const hasAnyFilter = Boolean(category || merchant || current.q);
+
+  return (
+    <div className="space-y-4 rounded-2xl bg-white p-4 ring-1 ring-slate-200">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div>
+          <label
+            htmlFor="filter-category"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-500"
+          >
+            Category
+          </label>
+          <select
+            id="filter-category"
+            value={category}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              update({ category: e.target.value || undefined });
+            }}
+            className="mt-1 w-full rounded-xl bg-white px-3 py-2 text-sm text-navy ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-brand"
+          >
+            <option value="">All categories</option>
+            {CATEGORIES.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label
+            htmlFor="filter-merchant"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-500"
+          >
+            Merchant
+          </label>
+          <select
+            id="filter-merchant"
+            value={merchant}
+            onChange={(e) => {
+              setMerchant(e.target.value);
+              update({ merchant: e.target.value || undefined });
+            }}
+            className="mt-1 w-full rounded-xl bg-white px-3 py-2 text-sm text-navy ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-brand"
+          >
+            <option value="">All merchants</option>
+            {MERCHANTS.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label
+            htmlFor="filter-sort"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-500"
+          >
+            Sort by
+          </label>
+          <select
+            id="filter-sort"
+            value={sort}
+            onChange={(e) => {
+              setSort(e.target.value);
+              update({ sort: e.target.value });
+            }}
+            className="mt-1 w-full rounded-xl bg-white px-3 py-2 text-sm text-navy ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-brand"
+          >
+            {SORT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {hasAnyFilter ? (
+        <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3 text-xs">
+          <span className="text-slate-500">Active:</span>
+          {current.q ? (
+            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-brand ring-1 ring-blue-100">
+              Search: &quot;{current.q}&quot;
+            </span>
+          ) : null}
+          {category ? (
+            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-brand ring-1 ring-blue-100">
+              {CATEGORIES.find((c) => c.id === category)?.label ?? category}
+            </span>
+          ) : null}
+          {merchant ? (
+            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-brand ring-1 ring-blue-100">
+              {MERCHANTS.find((m) => m.id === merchant)?.name ?? merchant}
+            </span>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => {
+              setCategory("");
+              setMerchant("");
+              setSort("featured");
+              startTransition(() => {
+                router.push("/products");
+              });
+            }}
+            className="ml-auto rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-700 hover:bg-slate-200"
+          >
+            Clear all
+          </button>
+        </div>
+      ) : null}
+
+      {isPending ? (
+        <p className="text-xs text-slate-400" aria-live="polite">
+          Updating results...
+        </p>
+      ) : null}
+    </div>
+  );
+}
